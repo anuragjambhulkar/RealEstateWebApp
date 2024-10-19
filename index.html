@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Listings</title>
+    <style>
+      /* CSS styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+        color: #333;
+      }
+
+      .button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        text-align: center;
+      }
+
+      .button:hover {
+        background-color: #0056b3;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+
+      form label {
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      form input[type="text"],
+      form input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+      #loginForm input[type="text"],
+      #loginForm input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      form select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+
+      form button:hover {
+        background-color: #0056b3;
+      }
+
+      .property-card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        padding: 20px;
+      }
+
+      .property-card h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .property-card p {
+        margin-bottom: 10px;
+      }
+
+      .property-card button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .property-card button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body id="body">
+    <div class="container" id="loginContainer">
+      <h1>Real Estate For Agent</h1>
+      <div id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Enter username" />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter password" />
+
+        <button class="button" onclick="login()">Login</button>
+      </div>
+    </div>
+
+    <div id="searchContainer" class="container" style="display: block">
+      <h1>Real Estate Listings</h1>
+      <form id="searchForm">
+        <label for="location">Location:</label>
+        <input type="text" id="location" placeholder="Enter location" />
+
+        <label for="priceRange">Price Range:</label>
+        <select id="priceRange">
+          <option value="">Select price range</option>
+          <option value="0-100000">$0 - $100,000</option>
+          <option value="100000-200000">$100,000 - $200,000</option>
+          <option value="200000-300000">$200,000 - $300,000</option>
+          <!-- Add more options as needed -->
+        </select>
+
+        <label for="propertyType">Property Type:</label>
+        <select id="propertyType">
+          <option value="">Select property type</option>
+          <option value="house">House</option>
+          <option value="apartment">Apartment</option>
+          <option value="condo">Condo</option>
+          <!-- Add more options as needed -->
+        </select>
+
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <div id="propertyList" class="container" style="display: block">
+      <!-- Property listings will be displayed here -->
+    </div>
+
+    <div id="addPropertyForm" class="container" style="display: none">
+      <h2>Add New Property</h2>
+      <form id="newPropertyForm">
+        <label for="title">Title:</label>
+        <input type="text" id="title" required />
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" required />
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" required />
+
+        <label for="type">Property Type:</label>
+        <select id="type" required>
+          <option value="">Select property type</option>
+          <option value="house">House</option>
+          <option value="apartment">Apartment</option>
+          <option value="condo">Condo</option>
+          <!-- Add more options as needed -->
+        </select>
+
+        <label for="agent">Agent Name:</label>
+        <input type="text" id="agent" required />
+
+        <button type="submit">Add Property</button>
+        <button type="button" onclick="logout()">Logout</button>
+      </form>
+    </div>
+
+    <script>
+      var properties = [
+        // Initial properties (dummy data)
+        {
+          id: 1,
+          title: "Beautiful House in the Suburbs",
+          location: "Suburbia",
+          price: 250000,
+          type: "house",
+          agent: "John Doe",
+        },
+        {
+          id: 2,
+          title: "Modern Apartment in Downtown",
+          location: "Downtown",
+          price: 150000,
+          type: "apartment",
+          agent: "Jane Smith",
+        },
+        {
+          id: 3,
+          title: "Luxury Condo with Ocean View",
+          location: "Beachfront",
+          price: 500000,
+          type: "condo",
+          agent: "James Johnson",
+        },
+        // Add more properties as needed
+      ];
+
+      var propertyList = document.getElementById("propertyList");
+      var searchContainer = document.getElementById("searchContainer");
+      var addPropertyForm = document.getElementById("addPropertyForm");
+
+      function displayProperties(properties) {
+        propertyList.innerHTML = "";
+        properties.forEach(function (property) {
+          var propertyCard = document.createElement("div");
+          propertyCard.classList.add("property-card");
+          propertyCard.innerHTML = `
+                    <h2>${property.title}</h2>
+                    <p><strong>Location:</strong> ${property.location}</p>
+                    <p><strong>Price:</strong> $${property.price.toLocaleString()}</p>
+                    <p><strong>Type:</strong> ${property.type}</p>
+                    <p><strong>Agent:</strong> ${property.agent}</p>
+                    <button onclick="viewProperty(${
+                      property.id
+                    })">View Details</button>
+                `;
+          propertyList.appendChild(propertyCard);
+        });
+      }
+
+      function login() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        // Check if the username and password match
+        if (username === "admin" && password === "admin") {
+          // Successful login
+          document.getElementById("loginContainer").style.display = "none";
+          propertyList.style.display = "none";
+          searchContainer.style.display = "none";
+          addPropertyForm.style.display = "block";
+          displayProperties(properties);
+        } else {
+          // Failed login
+          alert("Invalid username or password.");
+        }
+      }
+
+      function logout() {
+        document.getElementById("loginContainer").style.display = "block";
+        document.getElementById("searchContainer").style.display = "block";
+        document.getElementById("propertyList").style.display = "block";
+        document.getElementById("addPropertyForm").style.display = "none";
+      }
+
+      function addProperty(event) {
+        event.preventDefault(); // Prevent default form submission
+        var title = document.getElementById("title").value;
+        var location = document.getElementById("location").value;
+        var price = parseInt(document.getElementById("price").value);
+        var type = document.getElementById("type").value;
+        var agent = document.getElementById("agent").value;
+
+        var newProperty = {
+          id: properties.length + 1,
+          title: title,
+          location: location,
+          price: price,
+          type: type,
+          agent: agent,
+        };
+
+        properties.push(newProperty);
+        displayProperties(properties);
+        document.getElementById("newPropertyForm").reset();
+      }
+      document
+        .getElementById("newPropertyForm")
+        .addEventListener("submit", addProperty);
+
+      document
+        .getElementById("searchForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+          var location = document.getElementById("location").value;
+          var priceRange = document.getElementById("priceRange").value;
+          var propertyType = document.getElementById("propertyType").value;
+
+          // Filter properties based on search criteria
+          var filteredProperties = properties.filter(function (property) {
+            return (
+              (!location ||
+                property.location
+                  .toLowerCase()
+                  .includes(location.toLowerCase())) &&
+              (!priceRange || getPriceRange(property.price) === priceRange) &&
+              (!propertyType || property.type === propertyType)
+            );
+          });
+
+          displayProperties(filteredProperties);
+        });
+
+      function getPriceRange(price) {
+        if (price <= 100000) {
+          return "0-100000";
+        } else if (price <= 200000) {
+          return "100000-200000";
+        } else if (price <= 300000) {
+          return "200000-300000";
+        } else {
+          return "300000+";
+        }
+      }
+
+      function viewProperty(id) {
+        var property = properties.find(function (property) {
+          return property.id === id;
+        });
+        if (property) {
+          // Display property details (e.g., in a modal)
+          alert(
+            `Property ID: ${property.id}\nTitle: ${property.title}\nLocation: ${
+              property.location
+            }\nPrice: $${property.price.toLocaleString()}\nType: ${
+              property.type
+            }\nAgent: ${property.agent}`
+          );
+        }
+      }
+
+      async function setRandomBackgroundImage(elementId, keyword) {
+            const element = document.getElementById(elementId);
+            const accessKey = 'uWfrJ5iTDNxMYZ53esF7oQ4yYz7oRwfraxESLsNE7CE'; // Replace with your Unsplash API access key
+            const unsplashURL = `https://api.unsplash.com/search/photos?page=1&query=${encodeURIComponent(keyword)}&client_id=${accessKey}`;
+
+            try {
+                const response = await fetch(unsplashURL);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.results.length > 0) {
+                        // Select a random image from the results
+                        const randomIndex = Math.floor(Math.random() * data.results.length);
+                        const imageUrl = data.results[randomIndex].urls.regular;
+                        
+                        // Set the selected image as the background
+                        element.style.backgroundImage = `url(${imageUrl})`;
+                        element.style.backgroundSize = 'cover'; // Ensures the image covers the entire element
+                        element.style.backgroundPosition = 'center'; // Centers the background image
+                    } else {
+                        console.error('No images found for the given keyword.');
+                    }
+                } else {
+                    console.error('Failed to fetch images from Unsplash:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching image from Unsplash:', error);
+            }
+        }
+
+
+      // Sample usage of setBackgroundImage function for each car
+      setRandomBackgroundImage("body", "realestate");
+    </script>
+  </body>
+</html>
